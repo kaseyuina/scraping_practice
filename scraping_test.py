@@ -8,23 +8,49 @@ target_url = url.format(1)
 # r = requests.get(url)
 r = requests.get(target_url)
 soup = BeautifulSoup(r.text)
+d_list = []
+
 contents = soup.find_all('div', class_='cassetteitem')
 # print(len(contents))
-content = contents[0]
+# content = contents[0]
 # print(content)
-detail = content.find('div', class_='cassetteitem-detail')
-table = content.find('table', class_='cassetteitem_other')
-title = detail.find('div', class_='cassetteitem_content-title').text
-address = detail.find('li', class_='cassetteitem_detail-col1').text
-access = detail.find('li', class_='cassetteitem_detail-col2').text
-age = detail.find('li', class_='cassetteitem_detail-col3').text
+for content in contents:
+    detail = content.find('div', class_='cassetteitem-detail')
+    table = content.find('table', class_='cassetteitem_other')
+    title = detail.find('div', class_='cassetteitem_content-title').text
+    address = detail.find('li', class_='cassetteitem_detail-col1').text
+    access = detail.find('li', class_='cassetteitem_detail-col2').text
+    age = detail.find('li', class_='cassetteitem_detail-col3').text
 
-# print(title, address, access, age)
+    # print(title, address, access, age)
 
-tr_tags = table.find_all('tr', class_='js-cassette_link')
-tr_tag = tr_tags[0]
-td_tag = [tag.text for tag in tr_tag.find_all('td')[2:6]]
-print(td_tag)
+    tr_tags = table.find_all('tr', class_='js-cassette_link')
+    for tr_tag in tr_tags:
+        floor, price, first_fee, capacity = tr_tag.find_all('td')[2:6]
+        fee, management_fee = price.find_all('li')
+        deposite, gratuity = first_fee.find_all('li')
+        madori, menseki = capacity.find_all('li')
+        # print(td_tag)
+        d = {
+            'title': title,
+            'address': address,
+            'access': access,
+            'age': age,
+            'floor': floor.text,
+            'fee': fee.text,
+            'management_fee': management_fee.text,
+            'deposite': deposite.text,
+            'gratuity': gratuity.text,
+            'madori': madori.text,
+            'menseki': menseki.text
+        }
+        d_list.append(d)
+
+from pprint import pprint
+
+pprint(d_list[1])
+
+# print(d)
 
 # print(r.url)
 # print(r.text)
