@@ -1,13 +1,15 @@
 from time import sleep
 from bs4 import BeautifulSoup
 import requests
+import pandas as pd
+from pprint import pprint
 
 # url = 'https://www.python.org/'
 # url = 'https://tech-diary.net/python-scraping-books/'
 url = 'https://suumo.jp/chintai/tokyo/sc_shinjuku/?page={}'
 d_list = []
 
-for i in range(1, 4):
+for i in range(1, 3):
     print('d_listの大きさ：', len(d_list))
     target_url = url.format(i)
     
@@ -16,6 +18,7 @@ for i in range(1, 4):
     r = requests.get(target_url)
     soup = BeautifulSoup(r.text)
 
+    sleep(1)
     contents = soup.find_all('div', class_='cassetteitem')
     # print(len(contents))
     # content = contents[0]
@@ -52,9 +55,18 @@ for i in range(1, 4):
             }
             d_list.append(d)
 
-    # from pprint import pprint
 
     # pprint(d_list[1])
+# pprint(d_list[:2])
+
+df = pd.DataFrame(d_list)
+print(df.head())
+print(df.shape)
+
+print(len(df.title.unique()))
+
+df.to_csv('test.csv', index=None, encoding='utf-8-sig')
+
 
 # print(d)
 
